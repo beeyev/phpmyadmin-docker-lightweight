@@ -1,4 +1,7 @@
 # docker build -t phpmyadmin-fpm-alpine-caddy --build-arg BUILDKIT_INLINE_CACHE=1 -f ./docker/Dockerfile . && docker run --rm -it -p 8080:80 phpmyadmin-fpm-alpine-caddy
+ARG BASE_IMAGE_VERSION=latest
+FROM phpmyadmin/phpmyadmin:${BASE_IMAGE_VERSION} as phpmyadmin
+
 FROM alpine:3 as phpmyadmin-themes
 WORKDIR /src/
 RUN set -eux \
@@ -8,8 +11,7 @@ RUN set -eux \
     && curl -fsSL https://github.com/phpmyadmin/themes/archive/refs/heads/master.zip --output /src/phpmyadmin-themes.zip \
     && unzip -uoq /src/phpmyadmin-themes.zip -d /src/
 
-ARG BASE_IMAGE_VERSION=latest
-FROM phpmyadmin/phpmyadmin:${BASE_IMAGE_VERSION}
+FROM phpmyadmin
 
 ENV TERM="xterm-256color" \
 LANGUAGE="en_US.UTF-8" \
