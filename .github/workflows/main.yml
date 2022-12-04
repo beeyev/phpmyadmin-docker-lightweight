@@ -73,6 +73,7 @@ jobs:
             BUILD_DATE=${{ env.BUILD_DATE }}
             BUILD_FINGERPRINT=${{ env.BUILD_FINGERPRINT }}
             BASE_IMAGE_VERSION=${{ matrix.base_image_version }}
+            IMAGE_TAG=${{ matrix.release_image_version }}
           tags: |
             beeyev/phpmyadmin-lightweight:${{ matrix.release_image_version }}
             ghcr.io/beeyev/phpmyadmin-docker-lightweight:${{ matrix.release_image_version }}
