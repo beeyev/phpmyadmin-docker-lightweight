@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  phpmyadmin:
+    image: beeyev/phpmyadmin-lightweight:latest
+    container_name: 'phpmyadmin'
+    restart: unless-stopped
+    tty: true
+    environment:
+      - 'TZ=CET'
+      - 'PMA_HOST=mysql'
+      - 'PMA_USER=root'
+      - 'PMA_PASSWORD=TestRootPassword'
+    ports:
+      - '8080:80'
+    networks:
+      - network1
+
+  mysql:
+    image: bitnami/mysql:8.0
+    container_name: 'mysql'
+    restart: unless-stopped
+    tty: true
+    environment:
+      - 'TZ=CET'
+      - 'MYSQL_ROOT_PASSWORD=TestRootPassword'
+    networks:
+      - network1
+
+networks:
+  network1:
+    driver: bridge
