@@ -8,6 +8,7 @@ RUN set -eux \
     && curl -fsSL https://github.com/phpmyadmin/themes/archive/refs/heads/master.zip --output /src/phpmyadmin-themes.zip \
     && unzip -uoq /src/phpmyadmin-themes.zip -d /src/
 
+ARG BASE_IMAGE_VERSION=latest
 FROM phpmyadmin/phpmyadmin:${BASE_IMAGE_VERSION}
 
 ENV TERM="xterm-256color" \
