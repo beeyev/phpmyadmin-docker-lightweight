@@ -8,7 +8,7 @@ This project is built on top of the official phpMyAdmin fpm-alpine image, it inc
 The image is automatically updated, so the latests phpMyAdmin version is always supported.
 
 <details>
-<summary>Extra themes included into the image:</summary>
+<summary>Extra themes included into the image ▼</summary>
 
 `blueberry`
 
