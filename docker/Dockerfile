@@ -1,6 +1,6 @@
 # docker build -t phpmyadmin-fpm-alpine-caddy --build-arg BUILDKIT_INLINE_CACHE=1 -f ./docker/Dockerfile . && docker run --rm -it -p 8080:80 phpmyadmin-fpm-alpine-caddy
 ARG BASE_IMAGE_VERSION
-FROM phpmyadmin/phpmyadmin:${BASE_IMAGE_VERSION} as phpmyadmin
+FROM phpmyadmin:${BASE_IMAGE_VERSION} as phpmyadmin
 
 FROM alpine:3 as phpmyadmin-themes
 WORKDIR /src/
