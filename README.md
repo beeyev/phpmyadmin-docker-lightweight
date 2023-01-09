@@ -41,4 +41,6 @@ Follow the [official phpmyadmin documentation](https://github.com/phpmyadmin/doc
 The MIT License (MIT). Please see [License File](https://github.com/beeyev/phpmyadmin-docker-lightweight/blob/master/LICENSE) for more information.
 
 ---
-If you like this project, please consider giving me a ⭐
+If you like this project, please consider giving me a ⭐  
+
+![](https://visitor-badge.laobi.icu/badge?page_id=beeyev.phpmyadmin-docker-lightweight) [![Docker Pulls](https://img.shields.io/docker/pulls/beeyev/phpmyadmin-lightweight)](https://hub.docker.com/r/beeyev/phpmyadmin-lightweight)
