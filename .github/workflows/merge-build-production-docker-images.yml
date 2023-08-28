@@ -1,0 +1,50 @@
+# Alexander Tebiev - https://github.com/beeyev
+name: Build Production Docker Images
+
+on:
+  push:
+    branches: [ master ]
+
+  schedule:
+    - cron: "23 1 2 * *"
+
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  docker-image-deploy:
+    strategy:
+      fail-fast: false
+      matrix:
+        SOURCE_IMAGE_VERSION: [ '5.2-fpm-alpine' ]
+        TARGET_IMAGE_VERSION: [ '5.2' ]
+    uses: ./.github/workflows/callable-build-docker-image.yml
+    name: Build Production Docker Images / ${{ matrix.SOURCE_IMAGE_VERSION }}-${{ matrix.TARGET_IMAGE_VERSION }}
+    with:
+      BASE_IMAGE_VERSION: ${{ matrix.SOURCE_IMAGE_VERSION }}
+      DOCKER_REGISTRY_IMAGE: |
+        beeyev/phpmyadmin-lightweight:latest
+        beeyev/phpmyadmin-lightweight:${{ matrix.TARGET_IMAGE_VERSION }}
+        ghcr.io/beeyev/phpmyadmin-docker-lightweight:latest
+        ghcr.io/beeyev/phpmyadmin-docker-lightweight:${{ matrix.TARGET_IMAGE_VERSION }}
+      DOCKERFILE_PATH: ./docker/Dockerfile
+    secrets: inherit
+
+  update-docker-hub-repo-description:
+    name: Update Docker Hub repo description
+    runs-on: ubuntu-latest
+    needs: docker-image-deploy
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Update Docker Hub repo description
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          repository: beeyev/phpmyadmin-lightweight
+          #short-description: ${{ github.event.repository.description }}
