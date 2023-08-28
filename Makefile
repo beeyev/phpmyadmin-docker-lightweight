@@ -1,27 +1,54 @@
-THIS_FILE := $(abspath $(lastword $(MAKEFILE_LIST)))
-CURRENT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
+# Alexander Tebiev - https://github.com/beeyev
 
-up:
-	docker-compose up --build --no-deps --detach --remove-orphans
+.EXPORT_ALL_VARIABLES:
+.PHONY: *
+.DEFAULT_GOAL := help
 
-down:
-	docker-compose down  --remove-orphans
+ifeq (,$(shell command docker compose 2> /dev/null))
+  DOCKER_COMPOSE_COMMAND = docker-compose
+else
+  DOCKER_COMPOSE_COMMAND = docker compose
+endif
 
-stop:
-	docker-compose stop
+help: ## Show this help
+	@echo "Make Application Docker Images and Containers using Docker-Compose files in 'docker' Dir."
+	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m (default: help)\n\nTargets:\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
 
-update:
-	docker-compose pull
+up: ## Docker compose up
+	$(DOCKER_COMPOSE_COMMAND) up --build --no-deps --detach --remove-orphans
+
+start:
 	make up
 
-restart: down up
+down: ## Docker compose down
+	$(DOCKER_COMPOSE_COMMAND) down --remove-orphans
+
+stop: ## Docker compose stop
+	$(DOCKER_COMPOSE_COMMAND) stop
+
+restart: ## Restart containers
+	make down
+	make up
 	$(info Restart completed)
 
-state:
+update: ## Update containers
+	$(DOCKER_COMPOSE_COMMAND) pull
+	make up
+
+destroy: ## Destroy containers/volumes (keep sources app folders)
+	make stop
+	$(DOCKER_COMPOSE_COMMAND) down --rmi all --remove-orphans
+
+rebuild: ## Rebuild docker container (destroy & upgrade)
+	make destroy
+	make up
+
+state: ## Show current state
 	docker ps --format=table
 
 logs: ## Show docker logs
-	docker-compose logs -f --tail=100 $(ARGS)
+	$(DOCKER_COMPOSE_COMMAND) logs -f --tail=100 $(ARGS)
 
 phpmyadmin:
-	docker-compose exec phpmyadmin bash
+	$(DOCKER_COMPOSE_COMMAND) exec phpmyadmin bash
+	@printf "\n http://localhost:8080/ \n"

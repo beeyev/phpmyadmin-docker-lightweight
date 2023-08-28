@@ -22,11 +22,6 @@ jobs:
 #      (github.event.action == 'labeled' && github.event.label.name == 'make-test-build') ||
 #      (github.event.action == 'synchronize' && contains(github.event.pull_request.labels.*.name, 'make-test-build'))
     steps:
-      - name: Remove `test-build` label
-        uses: actions-ecosystem/action-remove-labels@v1
-        with:
-          labels: make-test-build
-
       - name: Sticky Pull Request Comment
         uses: marocchino/sticky-pull-request-comment@v2
         with:
@@ -34,10 +29,28 @@ jobs:
             > [Building test docker images...](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
 
   docker-image-deploy:
+    strategy:
+      fail-fast: false
+      matrix:
+        SOURCE_IMAGE_VERSION: [ '5.2-fpm-alpine' ]
+        TARGET_IMAGE_VERSION: [ 'test' ]
     uses: ./.github/workflows/callable-build-docker-image.yml
     name: Build Test Docker Images / ${{ matrix.baseDist }}-test
+    if: contains(github.event.label.name, 'make-test-build')
     with:
-      BASE_IMAGE_VERSION: 5.2-fpm-alpine
-      DOCKER_REGISTRY_IMAGE: ghcr.io/beeyev/phpmyadmin-docker-lightweight:test
+      BASE_IMAGE_VERSION: ${{ matrix.SOURCE_IMAGE_VERSION }}
+      DOCKER_REGISTRY_IMAGE: ghcr.io/beeyev/phpmyadmin-docker-lightweight:${{ matrix.TARGET_IMAGE_VERSION }}
       DOCKERFILE_PATH: ./docker/Dockerfile
     secrets: inherit
+
+  finalize:
+    name: Finalize
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    needs: docker-image-deploy
+    steps:
+      - name: Remove `test-build` label
+        uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          labels: make-test-build
