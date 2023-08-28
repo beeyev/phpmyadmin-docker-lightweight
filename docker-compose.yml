@@ -2,7 +2,7 @@
 
 services:
   phpmyadmin:
-    image: ghcr.io/beeyev/phpmyadmin-docker-lightweight:test
+    image: beeyev/phpmyadmin-lightweight:latest
     container_name: 'phpmyadmin'
     restart: unless-stopped
     tty: true
