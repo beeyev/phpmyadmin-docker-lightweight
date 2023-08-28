@@ -15,6 +15,6 @@
 	php_fastcgi 127.0.0.1:9000 {
 		trusted_proxies 0.0.0.0/0
 	}
-	file_server browse
+	file_server
 	encode zstd gzip
 }

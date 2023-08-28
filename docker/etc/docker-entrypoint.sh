@@ -20,9 +20,16 @@ for f in /docker-entrypoint.init.d/*; do
     esac
 done
 
-printf "\n${GRN}--->${NC} 	🚀️️	 Welcome to ${GRN}beeyev phpMyAdmin v.${VERSION} lightweight${NC} container..."
+printf "\n${GRN}--->${NC} 🚀  Starting ${GRN}beeyev phpMyAdmin v.${VERSION} lightweight${NC} container..."
 printf "\n${GRN}--->${NC} Docker image build date: ${GRN}${BUILD_DATE}${NC}, fingerprint: ${GRN}${BUILD_FINGERPRINT}${NC}"
-printf "\n${GRN}--->${NC} Subscribe to project updates: ${GRN}https://github.com/beeyev/phpmyadmin-docker-lightweight${NC}\n\n"
+printf "\n${GRN}--->${NC} Subscribe to the project updates: ${GRN}https://github.com/beeyev/phpmyadmin-docker-lightweight${NC}"
+
+printf "\n\nCaddy version:\n"
+caddy version
+
+printf "\nPHP-FPM version:\n"
+php-fpm --version
+printf "\n"
 
 caddy start --adapter caddyfile --config /etc/caddy/Caddyfile
 
