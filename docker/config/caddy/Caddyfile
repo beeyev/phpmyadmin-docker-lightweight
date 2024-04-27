@@ -1,20 +1,24 @@
-(proxyheaders) {
-	trusted_proxies 0.0.0.0/0
-}
-
 {
 	auto_https off
 	admin off
 	log {
 		level WARN
 	}
+	servers {
+		trusted_proxies static 0.0.0.0/0 ::/0
+	}
 }
 
 :80 {
 	root * /var/www/html/
-	php_fastcgi 127.0.0.1:9000 {
-		trusted_proxies 0.0.0.0/0
-	}
+	php_fastcgi localhost:9000
 	file_server
 	encode zstd gzip
+}
+
+# Internal healthcheck
+:9999 {
+	handle /health {
+		respond "OK" 200
+	}
 }
