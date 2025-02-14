@@ -2,9 +2,9 @@
 # Author: Alexander Tebiev - https://github.com/beeyev/phpmyadmin-docker-lightweight
 # docker buildx build --build-arg=BASE_IMAGE_VERSION=5.2-fpm-alpine --cache-to=type=inline --pull --tag phpmyadmin-fpm-alpine-caddy --file ./docker/Dockerfile ./ && docker run -p 9090:80 -it --rm phpmyadmin-fpm-alpine-caddy
 ARG BASE_IMAGE_VERSION
-FROM phpmyadmin:${BASE_IMAGE_VERSION} as phpmyadmin
+FROM phpmyadmin:${BASE_IMAGE_VERSION} AS phpmyadmin
 
-FROM alpine:3 as phpmyadmin-themes
+FROM alpine:3 AS phpmyadmin-themes
 WORKDIR /src/
 RUN set -eux \
     && apk add --quiet --no-cache \
